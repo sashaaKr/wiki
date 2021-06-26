@@ -1,0 +1,46 @@
+= Golang =
+
+=== Literals ===
+    * Integer literal
+    * Floating point literal
+    * Rune literal - represent characters
+    *
+
+=== Arrays ===
+
+{{{go
+
+var x = [3]int{10, 20, 30}
+
+}}}
+
+Earlier I said that arrays in Go are rarely used explicitly. 
+This is because they come with an unusual limitation: Go considers the size of
+the array to be part of the type of the array. This makes an array that’s 
+declared to be [3]int a different type from an array that’s declared to 
+be [4]int. This also means that you cannot use a variable to specify the size 
+of an array, because types must be resolved at compile time, not at runtime.
+
+What’s more, you can’t use a type conversion to convert arrays of different 
+sizes to identical types. Because you can’t convert arrays of different sizes 
+into each other, you can’t write a function that works with arrays of any size 
+and you can’t assign arrays of different sizes to the same variable.
+
+=== Slices ===
+{{{go
+var x = []int{10, 20, 30}
+
+// add variables to slice
+var x []int
+x = append(x, 10)
+// append more that one value
+x = append(x, 5, 6, 7)
+// merge 2 slices
+y := []int{20, 30, 40}
+x = append(x, y...)
+}}}
+
+What makes slices so useful is that the length is not part of the type for a 
+slice. This removes the limitations of arrays. We can write a single function 
+that processes slices of any size
+

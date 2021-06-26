@@ -1,0 +1,4 @@
+= My knowledge base =
+    * [[Tasks]] -- thisngs to de done
+    * [[Engineering]]
+    * Projects -- 
