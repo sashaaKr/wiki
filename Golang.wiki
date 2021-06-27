@@ -30,6 +30,10 @@ and you can’t assign arrays of different sizes to the same variable.
 {{{go
 var x = []int{10, 20, 30}
 
+// empty slice literal
+// comparing it to nil will return false
+var y = []int{}
+
 // add variables to slice
 var x []int
 x = append(x, 10)
@@ -43,4 +47,84 @@ x = append(x, y...)
 What makes slices so useful is that the length is not part of the type for a 
 slice. This removes the limitations of arrays. We can write a single function 
 that processes slices of any size
+
+=== make ===
+{{{go
+x := make([]int, 5, 10)
+}}}
+
+It allows us to specify the type, length, and, optionally, the capacity 
+of the slice.
+
+=== Declaring slice ===
+
+If you have a good idea of how large your slice needs to be, but don’t know 
+what those values will be when you are writing the program, use make. 
+The question then becomes whether you should specify a nonzero length in the 
+call to make or specify a zero length and a nonzero capacity. 
+There are three possibilities:
+
+* If you are using a slice as a buffer, then specify a nonzero length.
+* If you are sure you know the exact size you want, you can specify the length
+and index into the slice to set the values. This is often done when 
+transforming values in one slice and storing them in a second. 
+The downside to this approach is that if you have the size wrong, 
+you’ll end up with either zero values at the end of the slice or a panic from 
+trying to access elements that don’t exist.
+* In other situations, use make with a zero length and a specified capacity. 
+This allows you to use append to add items to the slice. If the number of items
+turns out to be smaller, you won’t have an extraneous zero value at the end. 
+If the number of items is larger, your code will not panic.
+
+=== Slicing slice ===
+{{{go
+x := []int{1, 2, 3, 4}
+y := x[:2]
+z := x[1:]
+d := x[1:3]
+e := x[:]
+}}}
+
+When you take a slice from a slice, you are not making a copy of the data. 
+Instead, you now have two variables that are sharing memory.
+This means that changes to an element in a slice affect all slices that share 
+that element
+To avoid complicated slice situations, you should either never use append with 
+a subslice or make sure that append doesn’t cause an overwrite by using a full
+slice expression.
+
+{{{go
+// bad example 
+x := make([]int, 0, 5)
+x = append(x, 1, 2, 3, 4)
+y := x[:2]
+z := x[2:]
+fmt.Println(cap(x), cap(y), cap(z))
+y = append(y, 30, 40, 50)
+x = append(x, 60)
+z = append(z, 70)
+fmt.Println("x:", x)
+fmt.Println("y:", y)
+fmt.Println("z:", z)
+
+// good example
+x := make([]int, 0, 5)
+x = append(x, 1, 2, 3, 4)
+y := x[:2:2]
+z := x[2:4:4]
+fmt.Println(cap(x), cap(y), cap(z))
+y = append(y, 30, 40, 50)
+x = append(x, 60)
+z = append(z, 70)
+fmt.Println("x:", x)
+fmt.Println("y:", y)
+fmt.Println("z:", z)
+}}}
+
+Third part, which indicates the last position in the parent slice’s capacity 
+that’s available for the subslice
+Because we limited the capacity of the subslices to their lengths, appending 
+additional elements onto y and z created new slices that didn’t interact with 
+the other slices.
+
 
