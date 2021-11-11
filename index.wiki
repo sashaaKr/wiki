@@ -2,3 +2,4 @@
     * [[Tasks]] -- thisngs to de done
     * [[Engineering]]
     * Projects -- 
+    * [[Daily]]

@@ -1,0 +1,19 @@
+= 29.6.21 =
+Some links that helped me to solve me how to configure entrypoint for all docker-compose then it runs with run:
+https://aws.amazon.com/blogs/opensource/demystifying-entrypoint-cmd-docker/
+https://oprearocks.medium.com/how-to-properly-override-the-entrypoint-using-docker-run-2e081e5feb9d
+
+Main point here is that Im going to create custom file in only place, and then put it as entrypoint
+{{{bash
+        --user $(id -u):$(id -g) \
+        --rm \
+        -v /etc/passwd:/etc/passwd \
+        -v /etc/group:/etc/group \
+        -v ~/.gitconfig:$HOME/.gitconfig:ro \
+        -v ~/.ssh:$HOME/.ssh:ro \
+        -v ~/.config/configstore:$HOME/.config/configstore \
+        -v ~/Lemonade/lmnd-cli/scripts/dev/dev-entrypoint.sh:$HOME/dev-entrypoint.sh:ro \
+        --entrypoint \"\$HOME/dev-entrypoint.sh\"
+}}}
+
+

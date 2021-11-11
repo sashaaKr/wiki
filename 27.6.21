@@ -1,0 +1,12 @@
+= 27.6.21 =
+Checking how much resources taking current kafka on dev env that based on:
+https://github.com/lensesio/fast-data-dev
+
+Total memory usage on startup is 2GB
+
+https://github.com/wurstmeister/kafka-docker
+
+kafka - 315MB
+zookeeper - 32MB
+
+this kafka seems ok, will stick with that for now

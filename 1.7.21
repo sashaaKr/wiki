@@ -1,0 +1,18 @@
+= 1.7.21 =
+Nice trick by Avital regarding how to use entrypoints:
+For example we wanna run some kind of base entrypoint and then run service specific entrypoint:
+{{{Dockerfile
+# Dockerfile:
+# Notice the entrypoint is in 'exec form' here - this is important!
+ENTRYPOINT ["dev-entrypoint.sh"]
+CMD entrypoint.sh
+}}}
+
+Then `dev-entrypoint.sh` would look something like:
+{{{bash
+#!/bin/ash
+
+# Do some stuff ...
+
+"$@"
+}}}

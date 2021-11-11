@@ -1,0 +1,36 @@
+= 28.6.21 =
+Trying to fix git work from inside container.
+So what we basically need is ability to run git precommit hooks from inside container.
+The main issue with that is nature of Docker that runs as root user, so if during precommit
+Thre is any prettier, or any another process that modifies files, they modified as root and become 
+Read only for ec2-user.
+
+As solution we can run docker with speicified user:
+{{{bash
+lmnd_dc run --user $(id -u):$(id -g) ...
+}}}
+
+Thanks to this blogpost: https://medium.com/redbubble/running-a-docker-container-as-a-non-root-user-7d2e00f8ee15
+
+So now if I mapping all configs (.ssh, .gitconfig, etc)
+and running following commands from docker:
+{{{bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/github
+}}}
+
+Im able to commit and pull.
+
+So now I need to understand how to it automatically?
+
+Full command that I using:
+{{{bash
+lmnd_dc run --rm --no-deps --user $(id -u):$(id -g) -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -v $HOME:$HOME monolith-server /bin/bash
+}}}
+
+
+This one seems work:
+{{{bash
+lmnd_dc run --rm --no-deps --user $(id -u):$(id -g) -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -v $HOME:$HOME monolith-server git add . && git commit -m 'test commit' && git push origin test_commit
+}}}
+
